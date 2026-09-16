@@ -251,7 +251,7 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
   const descripcion = document.getElementById('descripcion').value.trim();
   const fotoInput = document.getElementById('foto');
 
-  const generar = (fotoData) => {
+    const generar = (fotoData) => {
     const params = new URLSearchParams({
       n: nombre, t: telefono, g: negocio, c: ciudad,
       r: ruta, d: direccion, ds: descripcion, f: fotoData || '',
@@ -261,11 +261,25 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
   };
 
   if (fotoInput.files && fotoInput.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      generar(ev.target.result);
-    };
-    reader.readAsDataURL(fotoInput.files[0]);
+    const fd = new FormData();
+    fd.append('foto', fotoInput.files[0]);
+    fetch('https://subir-fotos.ngegestion.workers.dev', {
+      method: 'POST',
+      body: fd
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok && data.url) {
+        generar(data.url);
+      } else {
+        alert('Error subiendo la foto: ' + (data.error || 'desconocido'));
+        generar('');
+      }
+    })
+    .catch(err => {
+      alert('Error de conexión: ' + err.message);
+      generar('');
+    });
   } else {
     generar('');
   }
