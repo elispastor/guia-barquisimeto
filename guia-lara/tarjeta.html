@@ -27,7 +27,22 @@
   .cabecera .ciudad { font-size: 11px; color: #a0c4e8; letter-spacing: 1px; margin-top: 4px; }
 
   .cuerpo { padding: 24px 20px; text-align: center; }
-  .avatar { width: 100%; max-width: 260px; height: 180px; border-radius: 16px; margin: 0 auto 14px; background: linear-gradient(135deg, #0f2b44, #1a4b6d); display: flex; align-items: center; justify-content: center; border: 4px solid #fbbf24; overflow: hidden; }
+
+  .avatar {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
+    margin: 0 auto 14px;
+    background: linear-gradient(135deg, #0f2b44, #1a4b6d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #fbbf24;
+    overflow: hidden;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar .inicial { font-size: 42px; font-weight: 800; color: #fff; }
+
   .nombre { font-size: 22px; font-weight: 800; color: #0b1a2e; }
   .negocio { font-size: 16px; font-weight: 600; color: #1a4b6d; margin-top: 4px; }
   .descripcion { font-size: 14px; color: #4a5e72; margin-top: 10px; font-style: italic; }
@@ -103,7 +118,6 @@ if (!nombre) {
   let telLimpio = telefono.replace(/\D/g, '');
   if (telLimpio.startsWith('0')) telLimpio = telLimpio.substring(1);
 
-  // Link de referido único de esta tarjeta
   const urlBase = window.location.origin + '/';
   const nombreRef = encodeURIComponent(nombre);
   const urlReferido = urlBase + '?ref=' + nombreRef;
@@ -134,7 +148,7 @@ if (!nombre) {
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(window.location.href)}" alt="QR">
         <p><i class="fas fa-qrcode"></i> Escanea para ver mi tarjeta</p>
       </div>
-      <div class="footer">© 2026 Guía Digital Lara - Venezuela · Todos somos <i class="fas fa-heart"></i> · Derechos Reservados</div>
+      <div class="footer">© 2026 Guía Digital Lara - Venezuela · Todos somos <i class="fas fa-heart"></i> · <i class="fas fa-copyright"></i> Derechos Reservados</div>
     </div>
   `;
 
