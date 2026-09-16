@@ -61,6 +61,7 @@
     font-size: 15px; background: #f8fafc; color: #0b1a2e;
   }
   .form-group input:focus { outline: 2px solid #fbbf24; background: #fff; }
+  .form-group input[type="file"] { padding: 8px; background: #fff; }
 
   .btn-generar {
     width: 100%; padding: 14px; background: linear-gradient(45deg, #0f2b44, #1a4b6d);
@@ -71,40 +72,9 @@
 
   .nota { font-size: 11px; color: #6b7f93; text-align: center; margin-top: 12px; }
 
-  #resultado { display: none; margin-top: 24px; }
-  #resultado.visible { display: block; }
-
-  .tarjeta { background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #e0e8ee; }
-  .tarjeta .cabecera { background: linear-gradient(135deg, #0f2b44, #1a4b6d); padding: 18px; text-align: center; color: #fff; }
-  .tarjeta .cabecera .logo { font-size: 13px; letter-spacing: 2px; color: #fbbf24; font-weight: 700; }
-  .tarjeta .cabecera .ciudad { font-size: 11px; color: #a0c4e8; letter-spacing: 1px; }
-
-  .tarjeta .cuerpo { padding: 20px; text-align: center; }
-  .tarjeta .avatar { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 12px; background: linear-gradient(135deg, #0f2b44, #1a4b6d); display: flex; align-items: center; justify-content: center; border: 4px solid #fbbf24; overflow: hidden; }
-  .tarjeta .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .tarjeta .avatar .inicial { font-size: 38px; font-weight: 800; color: #fff; }
-
-  .tarjeta .nombre { font-size: 20px; font-weight: 800; color: #0b1a2e; }
-  .tarjeta .negocio { font-size: 15px; font-weight: 600; color: #1a4b6d; margin-top: 2px; }
-  .tarjeta .descripcion { font-size: 13px; color: #4a5e72; margin-top: 8px; font-style: italic; }
-  .tarjeta .dato { font-size: 14px; color: #4a5e72; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .tarjeta .dato i { color: #1a4b6d; width: 16px; }
-
-  .tarjeta .acciones { display: flex; gap: 8px; padding: 0 20px 16px; flex-wrap: wrap; }
-  .tarjeta .acciones a, .tarjeta .acciones button {
-    flex: 1; min-width: 70px; padding: 10px; border-radius: 60px; border: none;
-    font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none;
-    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-  }
-  .btn-wa { background: #25D366; color: #fff; }
-  .btn-call { background: #1a4b6d; color: #fff; }
-  .btn-share { background: #fbbf24; color: #0b1a2e; }
-
-  .qr-box { text-align: center; padding: 12px 20px 20px; }
-  .qr-box img { width: 130px; height: 130px; border-radius: 12px; background: #fff; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .qr-box p { font-size: 11px; color: #6b7f93; margin-top: 6px; }
-
-  .footer { text-align: center; padding: 12px; font-size: 11px; color: #6b7f93; }
+  .ref-box { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 16px; padding: 14px; margin: 16px 0; text-align: center; }
+  .ref-box p { font-size: 13px; color: #78350f; }
+  .ref-box strong { color: #0b1a2e; }
 </style>
 </head>
 <body>
@@ -165,6 +135,10 @@
     <a href="https://wa.me/584244259543?text=Hola%2C%20quiero%20mi%20tarjeta%20de%20la%20Gu%C3%ADa%20Digital%20Lara" class="btn-pago" target="_blank"><i class="fab fa-whatsapp"></i> Enviar comprobante por WhatsApp</a>
   </div>
 
+  <div class="ref-box" id="refBox" style="display:none;">
+    <p>🎁 Llegaste invitado por: <strong id="refNombre"></strong></p>
+  </div>
+
   <form id="formRegistro">
     <h3 style="font-size:16px; color:#0b1a2e; margin-bottom:10px; text-align:center;"><i class="fas fa-user-plus" style="color:#fbbf24;"></i> Crea tu tarjeta ahora</h3>
 
@@ -204,41 +178,13 @@
     </div>
 
     <div class="form-group">
-      <label>Link de tu foto o logo (opcional)</label>
-      <input type="url" id="foto" placeholder="https://...">
+      <label>Tu foto o logo (desde tu teléfono)</label>
+      <input type="file" id="foto" accept="image/*">
     </div>
 
     <button type="submit" class="btn-generar"><i class="fas fa-rocket"></i> Generar mi tarjeta</button>
     <p class="nota">Los campos con <span style="color:#ef4444;">*</span> son obligatorios</p>
   </form>
-
-  <div id="resultado">
-    <div class="tarjeta">
-      <div class="cabecera">
-        <div class="logo">GUÍA DIGITAL LARA - VENEZUELA</div>
-        <div class="ciudad" id="tCiudad">LARA - VENEZUELA</div>
-      </div>
-      <div class="cuerpo">
-        <div class="avatar" id="tAvatar"></div>
-        <div class="nombre" id="tNombre">Nombre</div>
-        <div class="negocio" id="tNegocio"></div>
-        <div class="descripcion" id="tDescripcion"></div>
-        <div class="dato" id="tTelefono"></div>
-        <div class="dato" id="tRuta"></div>
-        <div class="dato" id="tDireccion"></div>
-      </div>
-      <div class="acciones">
-        <a href="#" id="tWhatsApp" class="btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-        <a href="#" id="tCall" class="btn-call"><i class="fas fa-phone"></i> Llamar</a>
-        <button id="tShare" class="btn-share"><i class="fas fa-share-alt"></i> Compartir</button>
-      </div>
-      <div class="qr-box">
-        <img id="tQR" src="" alt="QR">
-        <p><i class="fas fa-qrcode"></i> Escanea para ver mi tarjeta</p>
-      </div>
-    </div>
-    <div class="footer">© 2026 Guía Digital Lara - Venezuela · Todos somos <i class="fas fa-heart"></i> · Derechos Reservados</div>
-  </div>
 
 </div>
 
@@ -285,6 +231,14 @@ document.getElementById('menuContacto').addEventListener('click', function() {
   menuPanel.classList.remove('open'); menuOverlay.classList.remove('active');
 });
 
+// Detectar referido en la URL
+const paramsURL = new URLSearchParams(window.location.search);
+const ref = paramsURL.get('ref');
+if (ref) {
+  document.getElementById('refBox').style.display = 'block';
+  document.getElementById('refNombre').textContent = ref;
+}
+
 document.getElementById('formRegistro').addEventListener('submit', function(e) {
   e.preventDefault();
 
@@ -295,50 +249,26 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
   const ruta = document.getElementById('ruta').value.trim();
   const direccion = document.getElementById('direccion').value.trim();
   const descripcion = document.getElementById('descripcion').value.trim();
-  const foto = document.getElementById('foto').value.trim();
+  const fotoInput = document.getElementById('foto');
 
-  const params = new URLSearchParams({
-    n: nombre, t: telefono, g: negocio, c: ciudad,
-    r: ruta, d: direccion, ds: descripcion, f: foto
-  });
-
-  const urlTarjeta = window.location.origin + '/tarjeta.html?' + params.toString();
-
-  const avatar = document.getElementById('tAvatar');
-  if (foto) {
-    avatar.innerHTML = '<img src="' + foto + '" alt="Foto" onerror="this.parentNode.innerHTML=\'<span class=&quot;inicial&quot;>' + nombre.charAt(0).toUpperCase() + '</span>\'">';
-  } else {
-    avatar.innerHTML = '<span class="inicial">' + nombre.charAt(0).toUpperCase() + '</span>';
-  }
-
-  document.getElementById('tNombre').textContent = nombre;
-  document.getElementById('tNegocio').textContent = negocio;
-  document.getElementById('tDescripcion').textContent = descripcion;
-  document.getElementById('tCiudad').textContent = ciudad ? ciudad.toUpperCase() : 'LARA - VENEZUELA';
-
-  document.getElementById('tTelefono').innerHTML = telefono ? '<i class="fas fa-phone"></i> ' + telefono : '';
-  document.getElementById('tRuta').innerHTML = ruta ? '<i class="fas fa-route"></i> ' + ruta : '';
-  document.getElementById('tDireccion').innerHTML = direccion ? '<i class="fas fa-location-dot"></i> ' + direccion : '';
-
-  const telLimpio = telefono.replace(/\D/g, '');
-  document.getElementById('tWhatsApp').href = 'https://wa.me/58' + telLimpio + '?text=Hola%2C%20vi%20tu%20tarjeta%20en%20la%20Gu%C3%ADa%20Digital%20Lara';
-  document.getElementById('tCall').href = 'tel:' + telefono;
-
-  document.getElementById('tQR').src = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(urlTarjeta);
-
-  document.getElementById('tShare').onclick = function() {
-    const texto = 'Mira mi tarjeta en la Guía Digital Lara - Venezuela: ' + nombre;
-    if (navigator.share) {
-      navigator.share({ title: 'Mi tarjeta - Guía Digital Lara', text: texto, url: urlTarjeta });
-    } else {
-      navigator.clipboard.writeText(texto + '\n' + urlTarjeta).then(function() {
-        alert('📋 Enlace copiado');
-      });
-    }
+  const generar = (fotoData) => {
+    const params = new URLSearchParams({
+      n: nombre, t: telefono, g: negocio, c: ciudad,
+      r: ruta, d: direccion, ds: descripcion, f: fotoData || '',
+      ref: ref || ''
+    });
+    window.open('tarjeta.html?' + params.toString(), '_blank');
   };
 
-  document.getElementById('resultado').classList.add('visible');
-  document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
+  if (fotoInput.files && fotoInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      generar(ev.target.result);
+    };
+    reader.readAsDataURL(fotoInput.files[0]);
+  } else {
+    generar('');
+  }
 });
 </script>
 
