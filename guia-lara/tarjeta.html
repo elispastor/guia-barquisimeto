@@ -46,7 +46,8 @@
   .btn-wa { background: #25D366; color: #fff; }
   .btn-call { background: #1a4b6d; color: #fff; }
   .btn-share { background: #fbbf24; color: #0b1a2e; }
-  .btn-registro { background: #8b5cf6; color: #fff; flex: 1 1 100%; }
+  .btn-ref { background: #8b5cf6; color: #fff; flex: 1 1 100%; }
+  .btn-registro { background: #0f2b44; color: #fff; flex: 1 1 100%; }
 
   .qr-box { text-align: center; padding: 0 20px 20px; }
   .qr-box img { width: 140px; height: 140px; border-radius: 12px; background: #fff; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -68,6 +69,7 @@
   <ul>
     <li id="menuInicio"><i class="fas fa-home"></i> Inicio</li>
     <li id="menuCompartir"><i class="fas fa-share-alt"></i> Compartir</li>
+    <li id="menuReferido"><i class="fas fa-gift"></i> Invitar y ganar</li>
     <li id="menuRegistro"><i class="fas fa-user-plus"></i> Crear mi tarjeta</li>
     <li id="menuContacto"><i class="fab fa-whatsapp"></i> WhatsApp</li>
   </ul>
@@ -88,6 +90,7 @@ const ruta = params.get('r') || '';
 const direccion = params.get('d') || '';
 const descripcion = params.get('ds') || '';
 const foto = params.get('f') || '';
+const ref = params.get('ref') || '';
 
 const cont = document.getElementById('contenido');
 
@@ -99,9 +102,15 @@ if (!nombre) {
     ? '<img src="' + foto + '" alt="Foto" onerror="this.parentNode.innerHTML=\'<span class=&quot;inicial&quot;>' + inicial + '</span>\'">'
     : '<span class="inicial">' + inicial + '</span>';
 
-const prefijo = params.get('p') || '58';
-let telLimpio = telefono.replace(/\D/g, '');
-if (telLimpio.startsWith('0')) telLimpio = telLimpio.substring(1);
+  const prefijo = params.get('p') || '58';
+  let telLimpio = telefono.replace(/\D/g, '');
+  if (telLimpio.startsWith('0')) telLimpio = telLimpio.substring(1);
+
+  // Link de referido único de esta tarjeta
+  const urlBase = window.location.origin + '/';
+  const nombreRef = encodeURIComponent(nombre);
+  const urlReferido = urlBase + '?ref=' + nombreRef;
+
   cont.innerHTML = `
     <div class="tarjeta">
       <div class="cabecera">
@@ -118,9 +127,10 @@ if (telLimpio.startsWith('0')) telLimpio = telLimpio.substring(1);
         ${direccion ? '<div class="dato"><i class="fas fa-location-dot"></i> ' + direccion + '</div>' : ''}
       </div>
       <div class="acciones">
-${telefono ? '<a href="https://wa.me/' + prefijo + telLimpio + '?text=Hola%2C%20vi%20tu%20tarjeta%20en%20la%20Gu%C3%ADa%20Digital" class="btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>' : ''}        
-${telefono ? '<a href="tel:' + telefono + '" class="btn-call"><i class="fas fa-phone"></i> Llamar</a>' : ''}
+        ${telefono ? '<a href="https://wa.me/' + prefijo + telLimpio + '?text=Hola%2C%20vi%20tu%20tarjeta%20en%20la%20Gu%C3%ADa%20Digital" class="btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>' : ''}
+        ${telefono ? '<a href="tel:' + telefono + '" class="btn-call"><i class="fas fa-phone"></i> Llamar</a>' : ''}
         <button class="btn-share" onclick="compartir()"><i class="fas fa-share-alt"></i> Compartir</button>
+        <button class="btn-ref" onclick="compartirReferido()"><i class="fas fa-gift"></i> Invitar y ganar 50%</button>
         <button class="btn-registro" onclick="window.location.href='/'"><i class="fas fa-user-plus"></i> Crear mi propia tarjeta</button>
       </div>
       <div class="qr-box">
@@ -130,6 +140,9 @@ ${telefono ? '<a href="tel:' + telefono + '" class="btn-call"><i class="fas fa-p
       <div class="footer">© 2026 Guía Digital Lara - Venezuela · Todos somos <i class="fas fa-heart"></i> · Derechos Reservados</div>
     </div>
   `;
+
+  window.urlReferido = urlReferido;
+  window.nombreTarjeta = nombre;
 }
 
 const menuToggle = document.getElementById('menuToggle');
@@ -157,6 +170,10 @@ document.getElementById('menuCompartir').addEventListener('click', function() {
   compartir();
   menuPanel.classList.remove('open'); menuOverlay.classList.remove('active');
 });
+document.getElementById('menuReferido').addEventListener('click', function() {
+  compartirReferido();
+  menuPanel.classList.remove('open'); menuOverlay.classList.remove('active');
+});
 document.getElementById('menuRegistro').addEventListener('click', function() {
   window.location.href = '/';
 });
@@ -165,12 +182,23 @@ document.getElementById('menuContacto').addEventListener('click', function() {
 });
 
 function compartir() {
-  const texto = 'Mira mi tarjeta en la Guía Digital Lara - Venezuela: ' + nombre;
+  const texto = 'Mira mi tarjeta en la Guía Digital Lara - Venezuela: ' + window.nombreTarjeta;
   if (navigator.share) {
     navigator.share({ title: 'Mi tarjeta - Guía Digital Lara', text: texto, url: window.location.href });
   } else {
     navigator.clipboard.writeText(texto + '\n' + window.location.href).then(function() {
       alert('📋 Enlace copiado');
+    });
+  }
+}
+
+function compartirReferido() {
+  const texto = 'Únete a la Guía Digital Lara y crea tu tarjeta. Yo te invité: ' + window.nombreTarjeta;
+  if (navigator.share) {
+    navigator.share({ title: 'Invítame a la Guía Digital', text: texto, url: window.urlReferido });
+  } else {
+    navigator.clipboard.writeText(texto + '\n' + window.urlReferido).then(function() {
+      alert('📋 Tu link de referido fue copiado:\n' + window.urlReferido);
     });
   }
 }
