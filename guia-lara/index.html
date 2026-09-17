@@ -126,14 +126,14 @@
     <p>Pago único Anual · Ocupa tu posición en la guía</p>
   </div>
 
- <div class="pago-box" id="pago">
+  <div class="pago-box" id="pago">
     <h3><i class="fas fa-credit-card"></i> Pago Móvil</h3>
     <div class="dato-pago"><span>Banco</span><span>Banesco</span></div>
     <div class="dato-pago"><span>Cédula</span><span>8833006</span></div>
     <div class="dato-pago"><span>Teléfono</span><span>04166520591</span></div>
     <div class="dato-pago"><span>Titular</span><span>Julio Vargas</span></div>
     <a href="https://wa.me/584244259543?text=Hola%2C%20quiero%20mi%20tarjeta%20de%20la%20Gu%C3%ADa%20Digital%20Lara" class="btn-pago" target="_blank"><i class="fab fa-whatsapp"></i> Enviar comprobante por WhatsApp</a>
-</div>
+  </div>
 
   <div class="ref-box" id="refBox" style="display:none;">
     <p>🎁 Llegaste invitado por: <strong id="refNombre"></strong></p>
@@ -250,29 +250,34 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
   const direccion = document.getElementById('direccion').value.trim();
   const descripcion = document.getElementById('descripcion').value.trim();
   const fotoInput = document.getElementById('foto');
-// Guardar persona en KV (multinivel)
-const guardarEnKV = (fotoData) => {
-  const urlKV = 'https://guia-digital-api.ngegestion.workers.dev/?accion=guardar-persona'
-    + '&nombre=' + encodeURIComponent(nombre)
-    + '&tel=' + encodeURIComponent(telefono)
-    + '&ref=' + encodeURIComponent(ref || '');
-  fetch(urlKV).catch(() => {});
-};
 
-   const generar = (fotoData) => {
+  // Guardar persona en KV (multinivel)
+  const guardarEnKV = () => {
+    const urlKV = 'https://guia-digital-api.ngegestion.workers.dev/?accion=guardar-persona'
+      + '&nombre=' + encodeURIComponent(nombre)
+      + '&tel=' + encodeURIComponent(telefono)
+      + '&ref=' + encodeURIComponent(ref || '');
+    fetch(urlKV).catch(() => {});
+  };
+
+  const generar = (fotoData) => {
     const params = new URLSearchParams({
       n: nombre, t: telefono, g: negocio, c: ciudad,
       r: ruta, d: direccion, ds: descripcion, f: fotoData || '',
       ref: ref || ''
     });
-    guardarEnKV(fotoData);
+
+    // PRIMERO: abrir la tarjeta (para que el navegador no la bloquee)
+    window.open('tarjeta.html?' + params.toString(), '_blank');
+
+    // DESPUÉS: guardar en KV (no bloquea nada)
+    guardarEnKV();
     const slug = nombre.toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
     const urlTarjeta = 'https://guia-lara.pages.dev/tarjeta?' + params.toString();
     fetch('https://guia-digital-api.ngegestion.workers.dev/?accion=guardar-link&slug=' + slug + '&url=' + encodeURIComponent(urlTarjeta)).catch(() => {});
-    window.open('tarjeta.html?' + params.toString(), '_blank');
   };
 
   if (fotoInput.files && fotoInput.files[0]) {
