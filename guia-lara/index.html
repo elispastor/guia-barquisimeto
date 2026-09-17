@@ -268,8 +268,7 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
     });
 
     // PRIMERO: abrir la tarjeta (para que el navegador no la bloquee)
-    window.open('tarjeta.html?' + params.toString(), '_blank');
-
+ventanaTarjeta.location.href = 'tarjeta.html?' + params.toString();
     // DESPUÉS: guardar en KV (no bloquea nada)
     guardarEnKV();
     const slug = nombre.toLowerCase()
