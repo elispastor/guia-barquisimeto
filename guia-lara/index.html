@@ -250,6 +250,14 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
   const direccion = document.getElementById('direccion').value.trim();
   const descripcion = document.getElementById('descripcion').value.trim();
   const fotoInput = document.getElementById('foto');
+// Guardar persona en KV (multinivel)
+const guardarEnKV = (fotoData) => {
+  const urlKV = 'https://guia-digital-api.ngegestion.workers.dev/?accion=guardar-persona'
+    + '&nombre=' + encodeURIComponent(nombre)
+    + '&tel=' + encodeURIComponent(telefono)
+    + '&ref=' + encodeURIComponent(ref || '');
+  fetch(urlKV).catch(() => {});
+};
 
     const generar = (fotoData) => {
     const params = new URLSearchParams({
@@ -257,6 +265,7 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
       r: ruta, d: direccion, ds: descripcion, f: fotoData || '',
       ref: ref || ''
     });
+     guardarEnKV(fotoData);
     window.open('tarjeta.html?' + params.toString(), '_blank');
   };
 
