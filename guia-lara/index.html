@@ -260,15 +260,17 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
     fetch(urlKV).catch(() => {});
   };
 
-  const generar = (fotoData, ventana) => {
+  const generar = (fotoData) => {
     const params = new URLSearchParams({
       n: nombre, t: telefono, g: negocio, c: ciudad,
       r: ruta, d: direccion, ds: descripcion, f: fotoData || '',
       ref: ref || ''
     });
 
-    ventana.location.href = 'tarjeta.html?' + params.toString();
+    // Abrir la tarjeta
+    window.open('tarjeta.html?' + params.toString(), '_blank');
 
+    // Guardar en KV
     guardarEnKV();
     const slug = nombre.toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -277,9 +279,6 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
     const urlTarjeta = 'https://guia-lara.pages.dev/tarjeta?' + params.toString();
     fetch('https://guia-digital-api.ngegestion.workers.dev/?accion=guardar-link&slug=' + slug + '&url=' + encodeURIComponent(urlTarjeta)).catch(() => {});
   };
-
-  // Abrir la ventana ANTES de cualquier fetch (para que el navegador no la bloquee)
-  const ventanaTarjeta = window.open('', '_blank');
 
   if (fotoInput.files && fotoInput.files[0]) {
     const fd = new FormData();
@@ -291,18 +290,18 @@ document.getElementById('formRegistro').addEventListener('submit', function(e) {
     .then(r => r.json())
     .then(data => {
       if (data.ok && data.url) {
-        generar(data.url, ventanaTarjeta);
+        generar(data.url);
       } else {
         alert('Error subiendo la foto: ' + (data.error || 'desconocido'));
-        generar('', ventanaTarjeta);
+        generar('');
       }
     })
     .catch(err => {
       alert('Error de conexión: ' + err.message);
-      generar('', ventanaTarjeta);
+      generar('');
     });
   } else {
-    generar('', ventanaTarjeta);
+    generar('');
   }
 });
 </script>
