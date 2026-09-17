@@ -59,7 +59,6 @@
   .btn-call { background: #1a4b6d; color: #fff; }
   .btn-share { background: #fbbf24; color: #0b1a2e; }
   .btn-ref { background: #8b5cf6; color: #fff; flex: 1 1 100%; }
-  .btn-registro { background: #0f2b44; color: #fff; flex: 1 1 100%; }
 
   .qr-box { text-align: center; padding: 0 20px 20px; }
   .qr-box img { width: 140px; height: 140px; border-radius: 12px; background: #fff; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -142,7 +141,6 @@ if (!nombre) {
         ${telefono ? '<a href="tel:' + telefono + '" class="btn-call"><i class="fas fa-phone"></i> Llamar</a>' : ''}
         <button class="btn-share" onclick="compartir()"><i class="fas fa-share-alt"></i> Compartir</button>
         <button class="btn-ref" onclick="compartirReferido()"><i class="fas fa-gift"></i> Invitar y ganar 50%</button>
-        <button class="btn-registro" onclick="window.location.href='/'"><i class="fas fa-user-plus"></i> Crear mi propia tarjeta</button>
       </div>
       <div class="qr-box">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(window.location.href)}" alt="QR">
