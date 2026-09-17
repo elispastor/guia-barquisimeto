@@ -1,1 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba</title>
+</head>
+<body style="font-family:sans-serif; padding:20px;">
 
+<h2>Prueba de formulario</h2>
+
+<form id="miForm">
+  <input type="text" id="nombre" placeholder="Nombre" required>
+  <button type="submit">Generar</button>
+</form>
+
+<div id="resultado" style="margin-top:20px; font-weight:bold;"></div>
+
+<script>
+document.getElementById('miForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const nombre = document.getElementById('nombre').value;
+  document.getElementById('resultado').textContent = 'Funcionó: ' + nombre;
+  window.open('tarjeta.html?n=' + encodeURIComponent(nombre), '_blank');
+});
+</script>
+
+</body>
+</html>
